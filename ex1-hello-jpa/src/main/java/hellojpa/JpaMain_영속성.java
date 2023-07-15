@@ -4,30 +4,31 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
-public class JpaMain {
+public class JpaMain_영속성 {
     public static void main(String[] args) {
-        //req : persistenceUnitName : xml에 적혀있는거
-        //어플리케이션 실행시에 딱 한번만 만들어짐
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
-
-        //얘는 스레드간의 공유 절대 안됨
-        //요청 올때 사용하고 버려야함.
         EntityManager em = emf.createEntityManager();
-
-        //jpa에서는 트랜잭션이란 단위 신경써야됨
-        // 트랜잭션 얻을 수 있음.
-        //jpa의 모든 데이터 변경은 트랜잭션 안에서 실행해야함
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
+            //비 영속 상태
+            //JPA랑 상관없음. DB에 들어가지도 않음
             Member member = new Member();
+            member.setId(100L);
+            member.setUsername("helloJPA");
 
-            member.setId(2L);
-            member.setUsername("HelloB");
+            //영속, 객체를 저장한상태
+            //영속성 컨텍스트에 저장, 이때 DB에 저장되는건 아님.
             em.persist(member);
-            tx.commit();
+
+            //회원 엔티티를 영속성 컨텍스트에서 분리, 준영속 상태
+            //em.detach(member);
+
+            //삭제
+            //em.remove(member);
         } catch (Exception e) {
             tx.rollback();
         } finally {

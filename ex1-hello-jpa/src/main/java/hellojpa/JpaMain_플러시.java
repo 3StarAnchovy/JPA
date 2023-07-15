@@ -5,25 +5,21 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-public class JpaMain_modify {
+public class JpaMain_플러시 {
     public static void main(String[] args) {
-        //req : persistenceUnitName : xml에 적혀있는거
-        //어플리케이션 실행시에 딱 한번만 만들어짐
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
         EntityManager em = emf.createEntityManager();
-
-        //jpa에서는 트랜잭션이란 단위 신경써야됨
-        // 트랜잭션 얻을 수 있음.
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Member findMember = em.find(Member.class, 1L); // 자바 컬렉션같은거, 2번째 인자값은 PK
-            findMember.setUsername("HelloJPA");
+            Member member = new Member(200L, "member 200");
+            em.persist(member);
 
-           //em.persist(findMember); 이거 안해도 됨. 설계 자체가 컬렉션 만지듯이 되어있음
+            em.flush();
 
-            tx.commit();
+            System.out.println("=====");
+            em.flush();
         } catch (Exception e) {
             tx.rollback();
         } finally {

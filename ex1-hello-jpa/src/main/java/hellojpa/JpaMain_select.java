@@ -21,7 +21,7 @@ public class JpaMain_select {
             Member findMember = em.find(Member.class, 1L); // 자바 컬렉션같은거, 2번째 인자값은 PK
 
             System.out.println("id : " + findMember.getId());
-            System.out.println("id : " + findMember.getName());
+            System.out.println("id : " + findMember.getUsername());
 
             tx.commit();
         } catch (Exception e) {

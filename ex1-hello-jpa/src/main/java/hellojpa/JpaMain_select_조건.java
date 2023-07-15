@@ -30,7 +30,7 @@ public class JpaMain_select_조건 {
                     .setMaxResults(8)
                     .getResultList();
             for (Member member : result)
-                System.out.println("member.name = " + member.getName());
+                System.out.println("member.name = " + member.getUsername());
         } catch (Exception e) {
             tx.rollback();
         } finally {
