@@ -1,7 +1,10 @@
 package jpabook.jpashop.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.aspectj.weaver.ast.Or;
+import org.hibernate.criterion.Order;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -52,5 +55,36 @@ public class Orders {
         delivery.setOrders(this);
     }
 
+    //주문 생성
+    public Orders createOrder(Member member, Delivery delivery, OrderItem... orderItems) {
+        Orders orders = new Orders();
+
+        orders.setMember(member);
+        orders.setDelivery(delivery);
+        for (OrderItem orderItem : orderItems) {
+            orders.addOrderItems(orderItem);
+        }
+        orders.setStatus(OrderStatus.ORDER);
+        orders.setOrderDate(LocalDateTime.now());
+
+        return orders;
+    }
+
+    //주문 취소
+    public void cancel() {
+        if (delivery.getStatus() == DeliveryStatus.COMP) {
+            throw new IllegalStateException("이미 배송된 상품은 취소가 불가함");
+        }
+
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem : orderItems) {
+            orderItem.cancel();
+        }
+    }
+
+    //조회 
+    public int getTotalPrice() {
+        return orderItems.stream().mapToInt(OrderItem::getTotalPrice).sum();
+    }
 
 }
